@@ -1,11 +1,12 @@
 import './App.css';
-import { Button } from '@material-ui/core';
+import Header from './components/Header';
+import MainGrid from './components/MainGrid';
 
 function App() {
   return (
     <div>
-      Hello World
-      <Button color='primary' variant='contained'>Hello World</Button>
+      <Header></Header>
+      <MainGrid></MainGrid>
     </div>
   )
 }
