@@ -71,10 +71,11 @@ export default function GlobalData() {
         </Paper>
     </div>
   );
-  }
+}
   else {
     return (
       <div className={classes.root}>
+          <h2>Global Stats</h2>
           <Paper elevation={3}>
             <Typography variant="h4" gutterBottom>
               {globalData && globalData.Global && globalData.Global.TotalConfirmed.toLocaleString()}
