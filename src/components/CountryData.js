@@ -38,7 +38,7 @@ export const CountryData = () => {
             setLoading(false);
         }
         fetchCountryData();
-    },[]);
+    },[countryData]);
     for (let i=0; i<190; i+=1) {
         options.push(countryData[i].Country);
     }
