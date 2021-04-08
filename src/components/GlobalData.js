@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import { Typography } from '@material-ui/core';
+import { Skeleton } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -32,47 +33,12 @@ export default function GlobalData() {
     }
     fetchGlobalData();
   }, []);
-  const loading = 'Loading...';
   
   if (isLoading) {
   return (
-    <div className={classes.root}>
-        <Paper elevation={3}>
-          <Typography variant="h4" gutterBottom>
-            {loading}
-          </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            Global Data
-          </Typography>
-        </Paper>
-        <Paper elevation={3} style={{color:'red'}}>
-          <Typography variant="h4" gutterBottom>
-            {loading}
-          </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            Active Cases
-          </Typography>
-        </Paper>
-        <Paper elevation={3} style={{color:'green'}}>
-          <Typography variant="h4" gutterBottom>
-            {loading}
-          </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            Recovered
-          </Typography>
-        </Paper>
-        <Paper elevation={3} style={{color:'grey'}}>
-          <Typography variant="h4" gutterBottom>
-            {loading}
-          </Typography>
-          <Typography variant="subtitle2" gutterBottom>
-            Fatalities
-          </Typography>
-        </Paper>
-    </div>
-  );
-}
-  else {
+    <Skeleton></Skeleton>
+    );
+  } else {
     return (
       <div className={classes.root}>
           <h2>Global Stats</h2>
@@ -81,7 +47,7 @@ export default function GlobalData() {
               {globalData && globalData.Global && globalData.Global.TotalConfirmed.toLocaleString()}
             </Typography>
             <Typography variant="subtitle2" gutterBottom>
-              Global Data
+              Total Cases
             </Typography>
           </Paper>
           <Paper elevation={3} style={{color:'red'}}>

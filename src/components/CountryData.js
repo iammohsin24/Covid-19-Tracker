@@ -18,31 +18,35 @@ const useStyles = makeStyles((theme) => ({
     const classes = useStyles();
     const [countryData,setCountryData] = useState([]);
     const [countries,setCountries] = useState([]);
-    const [isLoading,setLoading] = useState(true);
+    const [isLoading,setLoading] = useState(false);
     const [country,setCountry] = useState('Pakistan');
 
-    useEffect( () => {
-        async function fetchCountryData() {
-            try {
-                const apiResponse = await fetch('https://api.covid19api.com/summary');
-                const apiData = await apiResponse.json();
-                console.log(apiData);
-                const countryDataFromAPI = apiData.Countries;
-                setCountryData(countryDataFromAPI);
+    useEffect(() => {
+        const fetchCountryData = async () => {
+            setLoading(true);
+            fetch('https://api.covid19api.com/summary')
+            .then(response=>response.json())
+            .then(data=>{
+                console.log(data);
+                const { Countries } = data;
+                console.log(Countries);
+                setCountryData(Countries);
                 console.log(countryData);
                 setCountries(
-                    countryDataFromAPI.map(item=> {
+                    Countries.map(item=> {
                         return item.Country;
                     })
                 );
                 console.log(countries);
-            }
-            catch(error) {
-                console.log(error);
-            }
-            setLoading(false);
+                setLoading(false);
+
+            })
+            .catch((e)=> {
+                console.log(e)
+            });
         }
         fetchCountryData();
+        // eslint-disable-next-line
     },[]);
 
     const countryInput = () => {
@@ -52,7 +56,6 @@ const useStyles = makeStyles((theme) => ({
         return (
             <select value={country} onChange={({target}) => {
                 setCountry(target.value);
-                // outputResults();
             }
             }>
                     {countries.map((country, index) => (
@@ -66,49 +69,49 @@ const useStyles = makeStyles((theme) => ({
     }
 
     const outputResults = () => {
+        if (isLoading) {
+            return (
+                <Skeleton></Skeleton>
+            )} else {
         const i = countries.findIndex(item=> item === country);
         console.log(i);
-        if(!isLoading){
-            return (
-                <div className={classes.root}>
-                    <Paper elevation={3}>
-                        <Typography variant="h4" gutterBottom>
-                            {countryData[i].TotalConfirmed.toLocaleString()}
+        return (
+            <div className={classes.root}>
+                <Paper elevation={3}>
+                    <Typography variant="h4" gutterBottom>
+                        {countryData && countryData[i].TotalConfirmed.toLocaleString()}
+                    </Typography>
+                    <Typography variant="subtitle2" gutterBottom>
+                        Total Cases
                         </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            Global Data
+                </Paper>
+                <Paper elevation={3} style={{ color: 'red' }}>
+                    <Typography variant="h4" gutterBottom>
+                        {countryData && (countryData[i].TotalConfirmed - countryData[i].TotalDeaths - countryData[i].TotalRecovered).toLocaleString()}
+                    </Typography>
+                    <Typography variant="subtitle2" gutterBottom>
+                        Active Cases
                         </Typography>
-                    </Paper>
-                    <Paper elevation={3} style={{color:'red'}}>
-                        <Typography variant="h4" gutterBottom>
-                            {(countryData[i].TotalConfirmed-countryData[i].TotalDeaths-countryData[i].TotalRecovered).toLocaleString()}
+                </Paper>
+                <Paper elevation={3} style={{ color: 'green' }}>
+                    <Typography variant="h4" gutterBottom>
+                        {countryData && countryData[i].TotalRecovered.toLocaleString()}
+                    </Typography>
+                    <Typography variant="subtitle2" gutterBottom>
+                        Recovered
                         </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            Active Cases
+                </Paper>
+                <Paper elevation={3} style={{ color: 'grey' }}>
+                    <Typography variant="h4" gutterBottom>
+                        {countryData && countryData[i].TotalDeaths.toLocaleString()}
+                    </Typography>
+                    <Typography variant="subtitle2" gutterBottom>
+                        Fatalities
                         </Typography>
-                    </Paper>
-                    <Paper elevation={3} style={{color:'green'}}>
-                        <Typography variant="h4" gutterBottom>
-                            {countryData[i].TotalRecovered.toLocaleString()}
-                        </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            Recovered
-                        </Typography>
-                    </Paper>
-                    <Paper elevation={3} style={{color:'grey'}}>
-                        <Typography variant="h4" gutterBottom>
-                            {countryData[i].TotalDeaths.toLocaleString()}
-                        </Typography>
-                        <Typography variant="subtitle2" gutterBottom>
-                            Fatalities
-                        </Typography>
-                    </Paper>
-                </div>
-            )} else {
-                    return (
-                        <Skeleton></Skeleton>
-                    )
-        }
+                </Paper>
+            </div>
+        )
+    }
 }
 
 return (
